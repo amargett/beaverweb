@@ -10,8 +10,9 @@ const char* password = "robot2016";
 
 float getVal() {
     // Function to retrieve data
-    return random(1000) / 10.0; // Generate a random float between 0 and 100
+    return random(100) / 10.0; // Generate a random float between 0 and 100
 }
+
 
 void setup() {
     Serial.begin(115200);
@@ -39,17 +40,20 @@ void setup() {
         request->send(SPIFFS, "/index.html", "text/html");
     });
 
-    // Route to serve data
-    server.on("/data", HTTP_GET, [](AsyncWebServerRequest *request) {
-        // Generate data
-        float value = getVal();
-        
+// Route to serve acceleration data
+    server.on("/acceleration", HTTP_GET, [](AsyncWebServerRequest *request) {
+        // Generate acceleration data (replace these with actual accelerometer readings)
+        float accelerationX = getVal();
+        float accelerationY = getVal();
+        float accelerationZ = getVal();
+
         // Prepare JSON response
-        String json = "{\"time\": \"" + String(millis()) + "\", \"value\": " + String(value) + "}";
-        
+        String json = "{\"x\": " + String(accelerationX, 3) + ", \"y\": " + String(accelerationY, 3) + ", \"z\": " + String(accelerationZ, 3) + "}";
+
         // Send JSON response
         request->send(200, "application/json", json);
     });
+
 
     // Start server 
     server.begin();

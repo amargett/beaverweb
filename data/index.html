@@ -3,54 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Real-time Data Plot</title>
+    <title>Real-time Acceleration Plot</title>
+    <style>
+        #legend {
+            display: flex;
+            flex-direction: column; /* Change flex direction to column */
+            align-items: flex-start; /* Align items to the start */
+            padding: 0;
+            margin: 0 0 0; /* Moved up */
+        }
+        #legend li {
+            list-style-type: none;
+            margin-bottom: 1px; /* Adjusted margin */
+        }
+    </style>
 </head>
 <body>
-    <div style="width: 80%; margin: 0 auto;">
-        <h1>Real-time Data Plot</h1>
-        <canvas id="data-chart" width="800" height="400"></canvas>
+    <div style="width: 80%; margin: 10px auto;">
+        <h1>Real-time Acceleration Plot</h1>
+        <canvas id="acceleration-chart" width="800" height="400"></canvas>
+        <ul id="legend"></ul>
     </div>
 
     <script>
-        var canvas = document.getElementById('data-chart');
+        var canvas = document.getElementById('acceleration-chart');
         var ctx = canvas.getContext('2d');
 
-        var data = [];
-        var xOffset = 0;
+        var data = {
+            x: [],
+            y: [],
+            z: []
+        };
+
+        var colors = {
+            x: 'rgba(255, 99, 132, 0.5)', // Red
+            y: 'rgba(54, 162, 235, 0.5)', // Blue
+            z: 'rgba(255, 206, 86, 0.5)'  // Yellow
+        };
+
+        var legend = document.getElementById('legend');
+
         var yOffset = canvas.height / 2;
+        var xOffset = 40; 
         var scale = 10;
 
-        function updatePlot(newValue) {
-            data.push(newValue);
-
+        function updatePlot() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             ctx.beginPath();
             ctx.moveTo(0, yOffset);
             ctx.lineTo(canvas.width, yOffset);
+            ctx.strokeStyle = '#000';
             ctx.stroke();
 
-            ctx.beginPath();
-            ctx.moveTo(0, yOffset - (data[0] * scale));
-            for (var i = 1; i < data.length; i++) {
-                ctx.lineTo(i, yOffset - (data[i] * scale));
-            }
-            ctx.stroke();
+            // X axis label
+            ctx.font = '14px Arial';
+            ctx.fillStyle = '#000';
+            // ctx.textAlign = 'center';
+            // ctx.fillText('Time', canvas.width / 2, canvas.height - 10);
 
-            if (data.length > canvas.width) {
-                xOffset++;
+            // Y axis label
+            ctx.save();
+            ctx.translate(20, -5 + canvas.height / 2);
+            ctx.rotate(-Math.PI / 2);
+            ctx.fillText('Acceleration: x, y, z', 0, 0);
+            ctx.restore();
+
+            for (var axis in data) {
+                if (data[axis].length > 1) {
+                    ctx.beginPath();
+                    ctx.moveTo(xOffset, yOffset - (data[axis][0] * scale));
+                    ctx.strokeStyle = colors[axis];
+                    ctx.lineWidth = 2;
+                    for (var i = 1; i < data[axis].length; i++) {
+                        ctx.lineTo(xOffset+ i, yOffset - (data[axis][i] * scale));
+                    }
+                    ctx.stroke();
+                }
             }
         }
 
         function fetchData() {
-            fetch('/data')
+            fetch('/acceleration')
             .then(response => response.json())
-            .then(data => {
-                updatePlot(data.value);
+            .then(acceleration => {
+                for (var axis in acceleration) {
+                    data[axis].push(acceleration[axis]);
+                    if (data[axis].length > canvas.width) {
+                        data[axis].shift();
+                    }
+                }
+                updatePlot();
             })
             .catch(error => {
-                console.error('Error fetching data:', error);
+                console.error('Error fetching acceleration:', error);
             });
+        }
+
+        // Populate legend
+        for (var axis in colors) {
+            var li = document.createElement('li');
+            li.style.color = colors[axis];
+            li.textContent = axis.toUpperCase();
+            legend.appendChild(li);
         }
 
         setInterval(fetchData, 100);
