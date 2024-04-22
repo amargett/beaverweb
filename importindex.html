@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-time Data Plot</title>
+    <!-- Include Chart.js library -->
+    <script src="chart.js"></script>
+    
+</head>
+<body>
+    <div style="width: 80%; margin: 0 auto;">
+        <h1>Real-time Data Plot</h1>
+        <canvas id="data-chart"></canvas>
+    </div>
+
+    <script>
+        var chartData = {
+            labels: [],
+            datasets: [{
+                label: 'Data',
+                backgroundColor: 'rgba(0, 119, 204, 0.5)',
+                borderColor: 'rgba(0, 119, 204, 1)',
+                borderWidth: 2,
+                data: []
+            }]
+        };
+
+        var ctx = document.getElementById('data-chart').getContext('2d');
+        var chart = new Chart(ctx, {
+            type: 'line',
+            data: chartData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    xAxes: [{
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Time'
+                        }
+                    }],
+                    yAxes: [{
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Value'
+                        }
+                    }]
+                }
+            }
+        });
+
+        function fetchData() {
+            fetch('/data') // Send AJAX request to ESP32 server
+            .then(response => response.json())
+            .then(data => {
+                // Update chart with new data
+                chartData.labels.push(data.time);
+                chartData.datasets[0].data.push(data.value);
+
+                // Limit data points to keep the chart tidy
+                if (chartData.labels.length > 50) {
+                    chartData.labels.shift();
+                    chartData.datasets[0].data.shift();
+                }
+
+                // Update the chart
+                chart.update();
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+        }
+
+        // Fetch data periodically
+        setInterval(fetchData, 1000); // Fetch data every 1 second
+    </script>
+</body>
+</html>

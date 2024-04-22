@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Real-time Data Plot</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <canvas id="myChart" width="400" height="400"></canvas>
+  <script>
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var chart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: [],
+        datasets: [{
+          label: 'Sensor Data',
+          data: [],
+          borderColor: 'blue',
+          borderWidth: 1,
+          fill: false
+        }]
+      },
+      options: {
+        scales: {
+          xAxes: [{
+            type: 'realtime'
+          }]
+        }
+      }
+    });
+
+    // WebSocket connection to ESP32
+    var socket = new WebSocket('ws://192.168.0.100/');
+    socket.onmessage = function(event) {
+      var data = JSON.parse(event.data);
+      chart.data.labels.push(data.label);
+      chart.data.datasets.forEach((dataset) => {
+        dataset.data.push(data.value);
+      });
+      chart.update();
+    };
+  </script>
+</body>
+</html>

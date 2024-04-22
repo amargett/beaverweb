@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-time Data Plot</title>
+</head>
+<body>
+    <div style="width: 80%; margin: 0 auto;">
+        <h1>Real-time Data Plot</h1>
+        <canvas id="data-chart" width="800" height="400"></canvas>
+    </div>
+
+    <script>
+        // Get canvas element and context
+        var canvas = document.getElementById('data-chart');
+        var ctx = canvas.getContext('2d');
+
+        // Variables for data plotting
+        var data = [];
+        var xOffset = 0;
+        var yOffset = canvas.height / 2;
+        var scale = 10; // Adjust scale as needed
+
+        // Function to update plot with new data
+        function updatePlot(newValue) {
+            // Add new value to data array
+            data.push(newValue);
+
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw axes
+            ctx.beginPath();
+            ctx.moveTo(0, yOffset);
+            ctx.lineTo(canvas.width, yOffset);
+            ctx.stroke();
+
+            // Plot data points
+            ctx.beginPath();
+            ctx.moveTo(0, yOffset - (data[0] * scale));
+            for (var i = 1; i < data.length; i++) {
+                ctx.lineTo(i, yOffset - (data[i] * scale));
+            }
+            ctx.stroke();
+
+            // Adjust offset if canvas width is exceeded
+            if (data.length > canvas.width) {
+                xOffset++;
+            }
+        }
+
+        // Example of updating the plot with random data every second
+        setInterval(function() {
+            var newValue = Math.random() * 10; // Generate random value (adjust range as needed)
+            updatePlot(newValue);
+        }, 1000); // Update plot every 1 second
+    </script>
+</body>
+</html>
