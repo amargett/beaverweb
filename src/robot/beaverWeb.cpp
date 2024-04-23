@@ -19,7 +19,6 @@ void getIMU() {
         //if the IMU was not read successfully, print an error message and return
         Serial.println("IMU read failed");
     }
-    // else Serial.println("IMU Read Success");
     //got an angle reading from the IMU
     if (!newIMUAngles.gyro){
         imuAngles = newIMUAngles;
@@ -70,7 +69,6 @@ void setup() {
         // Send JSON response
         request->send(200, "application/json", json);
     });
-
 
     // Start server 
     server.begin();
