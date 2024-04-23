@@ -45,7 +45,7 @@
 
         var yOffset = canvas.height / 2;
         var xOffset = 40; 
-        var scale = 10;
+        var scale = 40;
 
         function updatePlot() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -76,7 +76,7 @@
                     ctx.strokeStyle = colors[axis];
                     ctx.lineWidth = 2;
                     for (var i = 1; i < data[axis].length; i++) {
-                        ctx.lineTo(xOffset+ i, yOffset - (data[axis][i] * scale));
+                        ctx.lineTo(xOffset+ i/2, yOffset - (data[axis][i] * scale));
                     }
                     ctx.stroke();
                 }
@@ -108,7 +108,7 @@
             legend.appendChild(li);
         }
 
-        setInterval(fetchData, 100);
+        setInterval(fetchData, 50);
     </script>
 </body>
 </html>

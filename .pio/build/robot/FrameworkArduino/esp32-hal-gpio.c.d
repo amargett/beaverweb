@@ -107,7 +107,7 @@
  /Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/cores/esp32/esp32-hal-psram.h \
  /Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/cores/esp32/esp32-hal-rgb-led.h \
  /Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/cores/esp32/esp32-hal-cpu.h \
- /Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/variants/um_pros3/pins_arduino.h \
+ /Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/variants/um_tinys3/pins_arduino.h \
  /Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/hal/include/hal/gpio_hal.h \
  /Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/hal/esp32s3/include/hal/gpio_ll.h \
  /Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/soc/esp32s3/include/soc/rtc_cntl_reg.h \

@@ -151,7 +151,7 @@
  /Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/cores/esp32/esp32-hal-matrix.h \
  /Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/cores/esp32/esp32-hal-uart.h \
  /Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/cores/esp32/esp32-hal-gpio.h \
- /Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/variants/um_pros3/pins_arduino.h \
+ /Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/variants/um_tinys3/pins_arduino.h \
  /Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/cores/esp32/esp32-hal-touch.h \
  /Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/cores/esp32/esp32-hal-dac.h \
  /Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/driver/include/driver/gpio.h \
@@ -209,4 +209,5 @@
  .pio/libdeps/robot/ESP\ Async\ WebServer/src/AsyncWebSocket.h \
  .pio/libdeps/robot/ESP\ Async\ WebServer/src/AsyncWebSynchronization.h \
  .pio/libdeps/robot/ESP\ Async\ WebServer/src/AsyncEventSource.h \
- /Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/libraries/SPIFFS/src/SPIFFS.h
+ /Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/libraries/SPIFFS/src/SPIFFS.h \
+ include/imu.h

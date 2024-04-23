@@ -8,8 +8,13 @@
         {
             "name": "PlatformIO",
             "includePath": [
+                "/Users/ashleymargetts/spiff/include",
                 "/Users/ashleymargetts/spiff/src",
                 "/Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/libraries/SPIFFS/src",
+                "/Users/ashleymargetts/spiff/.pio/libdeps/robot/Adafruit BNO08x/src",
+                "/Users/ashleymargetts/spiff/.pio/libdeps/robot/Adafruit Unified Sensor",
+                "/Users/ashleymargetts/spiff/.pio/libdeps/robot/Adafruit BusIO",
+                "/Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/libraries/Wire/src",
                 "/Users/ashleymargetts/spiff/.pio/libdeps/robot/ArduinoJson/src",
                 "/Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/libraries/SPI/src",
                 "/Users/ashleymargetts/spiff/.pio/libdeps/robot/ESP Async WebServer/src",
@@ -209,7 +214,7 @@
                 "/Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/fb_gfx/include",
                 "/Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/qio_qspi/include",
                 "/Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/cores/esp32",
-                "/Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/variants/um_pros3",
+                "/Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/variants/um_tinys3",
                 "/Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/libraries/ArduinoOTA/src",
                 "/Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/libraries/AsyncUDP/src",
                 "/Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/libraries/BLE/src",
@@ -238,14 +243,18 @@
                 "/Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/libraries/WebServer/src",
                 "/Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/libraries/WiFiClientSecure/src",
                 "/Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/libraries/WiFiProv/src",
-                "/Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/libraries/Wire/src",
                 ""
             ],
             "browse": {
                 "limitSymbolsToIncludedHeaders": true,
                 "path": [
+                    "/Users/ashleymargetts/spiff/include",
                     "/Users/ashleymargetts/spiff/src",
                     "/Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/libraries/SPIFFS/src",
+                    "/Users/ashleymargetts/spiff/.pio/libdeps/robot/Adafruit BNO08x/src",
+                    "/Users/ashleymargetts/spiff/.pio/libdeps/robot/Adafruit Unified Sensor",
+                    "/Users/ashleymargetts/spiff/.pio/libdeps/robot/Adafruit BusIO",
+                    "/Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/libraries/Wire/src",
                     "/Users/ashleymargetts/spiff/.pio/libdeps/robot/ArduinoJson/src",
                     "/Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/libraries/SPI/src",
                     "/Users/ashleymargetts/spiff/.pio/libdeps/robot/ESP Async WebServer/src",
@@ -445,7 +454,7 @@
                     "/Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/fb_gfx/include",
                     "/Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/qio_qspi/include",
                     "/Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/cores/esp32",
-                    "/Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/variants/um_pros3",
+                    "/Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/variants/um_tinys3",
                     "/Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/libraries/ArduinoOTA/src",
                     "/Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/libraries/AsyncUDP/src",
                     "/Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/libraries/BLE/src",
@@ -474,13 +483,12 @@
                     "/Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/libraries/WebServer/src",
                     "/Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/libraries/WiFiClientSecure/src",
                     "/Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/libraries/WiFiProv/src",
-                    "/Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/libraries/Wire/src",
                     ""
                 ]
             },
             "defines": [
                 "PLATFORMIO=60114",
-                "ARDUINO_PROS3",
+                "ARDUINO_TINYS3",
                 "BOARD_HAS_PSRAM",
                 "ARDUINO_USB_CDC_ON_BOOT=1",
                 "ARDUINO_RUNNING_CORE=1",
@@ -498,8 +506,8 @@
                 "ESP32",
                 "F_CPU=240000000L",
                 "ARDUINO=10812",
-                "ARDUINO_VARIANT=\"um_pros3\"",
-                "ARDUINO_BOARD=\"Unexpected Maker PROS3\"",
+                "ARDUINO_VARIANT=\"um_tinys3\"",
+                "ARDUINO_BOARD=\"Unexpected Maker TinyS3\"",
                 "ARDUINO_PARTITION_default",
                 ""
             ],

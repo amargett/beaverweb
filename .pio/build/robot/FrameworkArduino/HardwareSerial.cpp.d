@@ -1,6 +1,6 @@
 .pio/build/robot/FrameworkArduino/HardwareSerial.cpp.o: \
  /Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/cores/esp32/HardwareSerial.cpp \
- /Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/variants/um_pros3/pins_arduino.h \
+ /Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/variants/um_tinys3/pins_arduino.h \
  /Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/cores/esp32/HardwareSerial.h \
  /Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/cores/esp32/Stream.h \
  /Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/cores/esp32/Print.h \

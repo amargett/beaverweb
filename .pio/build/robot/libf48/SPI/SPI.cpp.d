@@ -1,7 +1,7 @@
 .pio/build/robot/libf48/SPI/SPI.cpp.o: \
  /Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/libraries/SPI/src/SPI.cpp \
  /Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/libraries/SPI/src/SPI.h \
- /Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/variants/um_pros3/pins_arduino.h \
+ /Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/variants/um_tinys3/pins_arduino.h \
  /Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/cores/esp32/esp32-hal-spi.h \
  /Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/freertos/include/freertos/FreeRTOS.h \
  /Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/freertos/include/esp_additions/freertos/FreeRTOSConfig.h \

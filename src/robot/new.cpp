@@ -2,21 +2,37 @@
 #include <AsyncTCP.h>
 #include <ESPAsyncWebServer.h>
 #include "SPIFFS.h"
+#include "imu.h"
 
 AsyncWebServer server(80);
+
+EulerAngles imuAngles; // IMU angles
+EulerAngles imuGyro; // IMU angles from gyro
 
 const char* ssid = "212IntroRobotics";
 const char* password = "robot2016";
 
-float getVal() {
-    // Function to retrieve data
-    return random(100) / 10.0; // Generate a random float between 0 and 100
+void getIMU() {
+    EulerAngles newIMUAngles = readIMU();
+    // only update PID if the IMU was read successfully
+    if (!newIMUAngles.success){
+        //if the IMU was not read successfully, print an error message and return
+        Serial.println("IMU read failed");
+    }
+    // else Serial.println("IMU Read Success");
+    //got an angle reading from the IMU
+    if (!newIMUAngles.gyro){
+        imuAngles = newIMUAngles;
+    } else {
+        //if the reading was from the gyro
+        imuGyro = newIMUAngles;
+    }
 }
-
 
 void setup() {
     Serial.begin(115200);
 
+    imuSetup(); 
     // Connect to WiFi
     WiFi.mode(WIFI_STA); 
     WiFi.begin(ssid, password);
@@ -43,9 +59,10 @@ void setup() {
 // Route to serve acceleration data
     server.on("/acceleration", HTTP_GET, [](AsyncWebServerRequest *request) {
         // Generate acceleration data (replace these with actual accelerometer readings)
-        float accelerationX = getVal();
-        float accelerationY = getVal();
-        float accelerationZ = getVal();
+        getIMU(); 
+        float accelerationX = imuGyro.roll;
+        float accelerationY = imuGyro.pitch;
+        float accelerationZ = imuGyro.yaw;
 
         // Prepare JSON response
         String json = "{\"x\": " + String(accelerationX, 3) + ", \"y\": " + String(accelerationY, 3) + ", \"z\": " + String(accelerationZ, 3) + "}";
@@ -60,5 +77,4 @@ void setup() {
 }
 
 void loop() {
-    // Add your main code logic here
 }

@@ -121,7 +121,7 @@
  /Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/cores/esp32/WString.h \
  /Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/cores/esp32/pgmspace.h \
  /Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/cores/esp32/Printable.h \
- /Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/variants/um_pros3/pins_arduino.h \
+ /Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/variants/um_tinys3/pins_arduino.h \
  /Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/cores/esp32/esp32-hal.h \
  /Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/esp_hw_support/include/esp_sleep.h \
  /Users/ashleymargetts/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/hal/include/hal/touch_sensor_types.h \
