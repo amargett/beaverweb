@@ -5,49 +5,61 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Real-time Acceleration Plot</title>
     <style>
-        #legend {
-            display: flex;
-            flex-direction: column; /* Change flex direction to column */
-            align-items: flex-start; /* Align items to the start */
-            padding: 0;
-            margin: 0 0 0; /* Moved up */
+        .roll {
+            color: red;
         }
-        #legend li {
-            list-style-type: none;
-            margin-bottom: 1px; /* Adjusted margin */
+        .pitch {
+            color: blue;
+        }
+        .yaw {
+            color: green;
         }
     </style>
 </head>
 <body>
-    <div style="width: 80%; margin: 10px auto;">
-        <h1>Real-time Acceleration Plot</h1>
-        <canvas id="acceleration-chart" width="800" height="400"></canvas>
+    <p><button>START</button></p>
+    <p><button>END</button></p>
+    <div style="width: 80%; margin: 5px auto;">
+        <h1>Real-time <span class="roll">Roll</span>, <span class="pitch">Pitch</span>, <span class="yaw">Yaw</span></h1>
+        <canvas id="pos-chart" width="800" height="300"></canvas>
+        <ul id="legend"></ul>
+    </div>  
+    <div style="width: 80%; margin: 5px auto;">
+        <h1>Real-time Average Acceleration</h1>
+        <canvas id="acc-chart" width="800" height="300"></canvas>
         <ul id="legend"></ul>
     </div>
 
     <script>
-        var canvas = document.getElementById('acceleration-chart');
+        var canvas = document.getElementById('acc-chart');
         var ctx = canvas.getContext('2d');
 
-        var data = {
+        var canvas1 = document.getElementById('pos-chart');
+        var ctx1 = canvas1.getContext('2d');
+
+        var posdata = {
             x: [],
             y: [],
             z: []
         };
 
+        var accdata = {
+            val: []
+        }
+
         var colors = {
-            x: 'rgba(255, 99, 132, 0.5)', // Red
-            y: 'rgba(54, 162, 235, 0.5)', // Blue
-            z: 'rgba(255, 206, 86, 0.5)'  // Yellow
+            x: 'red', // Red
+            y: 'blue', // Blue
+            z: 'green', // Green
+            val: 'red' // Red
         };
 
-        var legend = document.getElementById('legend');
-
         var yOffset = canvas.height / 2;
-        var xOffset = 40; 
+        var yOffset2 = canvas.height * 3 / 2;
+        var xOffset = 0;
         var scale = 40;
 
-        function updatePlot() {
+        function updateAccPlot() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             ctx.beginPath();
@@ -56,59 +68,79 @@
             ctx.strokeStyle = '#000';
             ctx.stroke();
 
-            // X axis label
-            ctx.font = '14px Arial';
-            ctx.fillStyle = '#000';
-            // ctx.textAlign = 'center';
-            // ctx.fillText('Time', canvas.width / 2, canvas.height - 10);
-
-            // Y axis label
-            ctx.save();
-            ctx.translate(20, -5 + canvas.height / 2);
-            ctx.rotate(-Math.PI / 2);
-            ctx.fillText('Acceleration: x, y, z', 0, 0);
-            ctx.restore();
-
-            for (var axis in data) {
-                if (data[axis].length > 1) {
+            for (var axis in accdata) {
+                if (accdata[axis].length > 1) {
                     ctx.beginPath();
-                    ctx.moveTo(xOffset, yOffset - (data[axis][0] * scale));
+                    ctx.moveTo(xOffset, yOffset - (accdata[axis][0] * scale));
                     ctx.strokeStyle = colors[axis];
                     ctx.lineWidth = 2;
-                    for (var i = 1; i < data[axis].length; i++) {
-                        ctx.lineTo(xOffset+ i/2, yOffset - (data[axis][i] * scale));
+                    for (var i = 1; i < accdata[axis].length; i++) {
+                        ctx.lineTo(xOffset + i / 2, yOffset - (accdata[axis][i] * scale));
                     }
                     ctx.stroke();
                 }
             }
         }
 
-        function fetchData() {
-            fetch('/acceleration')
-            .then(response => response.json())
-            .then(acceleration => {
-                for (var axis in acceleration) {
-                    data[axis].push(acceleration[axis]);
-                    if (data[axis].length > canvas.width) {
-                        data[axis].shift();
+        function updatePosPlot() {
+            ctx1.clearRect(0, 0, canvas.width, canvas.height);
+
+            ctx1.beginPath();
+            ctx1.moveTo(0, yOffset);
+            ctx1.lineTo(canvas.width, yOffset);
+            ctx1.strokeStyle = '#000';
+            ctx1.stroke();
+
+            for (var axis in posdata) {
+                if (posdata[axis].length > 1) {
+                    ctx1.beginPath();
+                    ctx1.moveTo(xOffset, yOffset - (posdata[axis][0] * scale));
+                    ctx1.strokeStyle = colors[axis];
+                    ctx1.lineWidth = 2;
+                    for (var i = 1; i < posdata[axis].length; i++) {
+                        ctx1.lineTo(xOffset + i / 2, yOffset - (posdata[axis][i] * scale));
                     }
+                    ctx1.stroke();
                 }
-                updatePlot();
-            })
-            .catch(error => {
-                console.error('Error fetching acceleration:', error);
-            });
+            }
         }
 
-        // Populate legend
-        for (var axis in colors) {
-            var li = document.createElement('li');
-            li.style.color = colors[axis];
-            li.textContent = axis.toUpperCase();
-            legend.appendChild(li);
+        function fetchPosData() {
+            fetch('/pos')
+                .then(response => response.json())
+                .then(pos => {
+                    for (var axis in pos) {
+                        posdata[axis].push(pos[axis]);
+                        if (posdata[axis].length > canvas.width) {
+                            posdata[axis].shift();
+                        }
+                    }
+                    updatePosPlot();
+                })
+                .catch(error => {
+                    console.error('Error fetching position', error);
+                });
         }
 
-        setInterval(fetchData, 50);
+        function fetchAccData() {
+            fetch('/acc')
+                .then(response => response.json())
+                .then(acc => {
+                    for (var axis in acc) {
+                        accdata[axis].push(acc[axis]);
+                        if (accdata[axis].length > canvas.width) {
+                            accdata[axis].shift();
+                        }
+                    }
+                    updateAccPlot();
+                })
+                .catch(error => {
+                    console.error('Error fetching acceleration:', error);
+                });
+        }
+
+        setInterval(fetchAccData, 50);
+        setInterval(fetchPosData, 50);
     </script>
 </body>
 </html>
