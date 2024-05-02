@@ -75,7 +75,9 @@ void setup() {
     server.on("/acc", HTTP_GET, [](AsyncWebServerRequest *request) {
         // Generate acceleration data (replace these with actual accelerometer readings)
         getIMU(); 
-        float acceleration = (imuGyro.roll + imuGyro.pitch + imuGyro.yaw)/3;
+        // float acceleration = (imuGyro.roll + imuGyro.pitch + imuGyro.yaw)/3;
+        float acceleration = pow((pow(imuGyro.roll, 2) + pow(imuGyro.pitch,2) + pow(imuGyro.yaw,2)), 0.5)/5;
+
 
         // Prepare JSON response
         String json = "{\"val\": " + String(acceleration, 3) + "}";
