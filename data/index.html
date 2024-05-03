@@ -11,9 +11,7 @@
         .pitch {
             color: blue;
         }
-        .yaw {
-            color: green;
-        }
+
         #health-bar {
             position: fixed;
             bottom: 10%;
@@ -25,13 +23,13 @@
         #health {
             width: 33%;
             background-color: green;
-            height: 81%;
+            height: 71%;
             bottom: 0; 
             position: absolute; 
         }
         #full-health {
             width: 32%;
-            height: 80%;
+            height: 70%;
             bottom: 0;
             position: absolute;
             border: 3px solid black;
@@ -42,7 +40,7 @@
     <p><button id="startBtn">START</button></p>
     <p><button id="stable">AMBULANCE REACHED</button></p>
     <div style="width: 80%; margin: 5px auto;">
-        <h1>Real-time <span class="roll">Roll</span>, <span class="pitch">Pitch</span>, <span class="yaw">Yaw</span></h1>
+        <h1>Real-time <span class="roll">Roll</span> & <span class="pitch">Pitch</span></h1>
         <canvas id="pos-chart" width="800" height="300"></canvas>
     </div>  
     <div style="width: 80%; margin: 5px auto;">
@@ -53,6 +51,7 @@
     <div id="health-bar">
         <h1>TIM Health Bar</h1>
         <h2 id="health-value">Health: <span id="currentHealth">100%</span></h2>
+        <h3 id="status">Status: <span id="currentStatus">Ready</span></h3>
         <div id="health"></div>
         <div id="full-health"></div> 
     </div>
@@ -67,7 +66,7 @@
         var canvas1 = document.getElementById('pos-chart');
         var ctx1 = canvas1.getContext('2d');
 
-        var posdata = {
+        var posdata = { 
             x: [],
             y: [],
             z: []
@@ -78,10 +77,9 @@
         }
 
         var colors = {
-            x: 'red', // Red
-            y: 'blue', // Blue
-            z: 'green', // Green
-            val: 'red' // Red
+            x: 'red', 
+            y: 'blue', 
+            val: 'green' 
         };
 
         var yOffset = canvas.height / 2;
@@ -171,36 +169,54 @@
 
         function decreaseHealth() {
             var healthElement = document.getElementById('health');
-            var currentHeight = parseFloat(healthElement.style.height) || 80;
+            var currentHeight = parseFloat(healthElement.style.height) || 70;
 
             // Calculate the slope based on the most recent acceleration and position values
             var latestAcc = accdata.val[accdata.val.length - 1];
             var latestPosx = posdata.x[posdata.x.length - 1];
             var latestPosy = posdata.y[posdata.y.length - 1];
 
-            var slope = Math.abs(latestAcc) + Math.abs(latestPosx) + Math.abs(latestPosy);
+            var statusElement = document.getElementById("currentStatus"); 
+            var statusText = "Tim Needs Your Help!"; 
+
+            if (Math.abs(latestPosx) > 0.5){
+                statusText = "Too much roll!"; 
+            }
+            if (Math.abs(latestPosy) > 0.5){
+                statusText = "Too much pitch!"; 
+            } 
+            if (Math.abs(latestAcc) > 0.5){
+                statusText = "Too much Acceleration!"; 
+            } 
             
-            console.log(slope); 
+            statusElement.textContent = statusText; 
 
-            // Adjust the rate of decrease based on the slope
-            currentHeight -= 0.005 + slope * 0.01; // Adjust this factor to control the sensitivity of the slope
-
+            var effect = Math.abs(latestAcc) + Math.abs(latestPosx) + Math.abs(latestPosy);
+            
             // Update the health bar color based on the slope
             var healthColor;
-            if (slope < 0.5) {
+            var slope = 0.005; 
+        
+            if (effect < 0.5) {
                 healthColor = 'green';
-            } else if (slope < 1.0) {
+            } else if (effect < 1.0) {
                 healthColor = 'yellow';
+                slope += 0.0025
             } else {
                 healthColor = 'red';
+                slope += 0.005
             }
+
+            // Adjust the rate of decrease based on the slope
+            currentHeight -= slope; // Adjust this factor to control the sensitivity of the slope
+
             healthElement.style.backgroundColor = healthColor;
 
             healthElement.style.height = currentHeight + '%';
 
             // Update the health value display
             var healthValueElement = document.getElementById('currentHealth');
-            healthValueElement.textContent = Math.round(currentHeight+20) + '%';
+            healthValueElement.textContent = Math.round(currentHeight*100/70) + '%';
 
             // Check if health is depleted
             if (currentHeight <= 0) {
@@ -211,43 +227,60 @@
 
         function stableHealth() {
             var healthElement = document.getElementById('health');
-            var currentHeight = parseFloat(healthElement.style.height) || 80;
+            var currentHeight = parseFloat(healthElement.style.height) || 70;
 
             // Calculate the slope based on the most recent acceleration and position values
             var latestAcc = accdata.val[accdata.val.length - 1];
             var latestPosx = posdata.x[posdata.x.length - 1];
             var latestPosy = posdata.y[posdata.y.length - 1];
 
-            var slope = Math.abs(latestAcc) + Math.abs(latestPosx) + Math.abs(latestPosy);
+            var statusElement = document.getElementById("currentStatus"); 
+            var statusText = "Tim Is Stabilizing"; 
+
+            if (Math.abs(latestPosx) > 0.5){
+                statusText = "Too much roll!"; 
+            }
+            if (Math.abs(latestPosy) > 0.5){
+                statusText = "Too much pitch!"; 
+            } 
+            if (Math.abs(latestAcc) > 0.5){
+                statusText = "Too much Acceleration!"; 
+            } 
             
-            console.log(slope); 
+            statusElement.textContent = statusText; 
 
-            // Adjust the rate of decrease based on the slope
-            currentHeight -= slope * 0.01; // Adjust this factor to control the sensitivity of the slope
-
+            var effect = Math.abs(latestAcc) + Math.abs(latestPosx) + Math.abs(latestPosy);
+            
             // Update the health bar color based on the slope
             var healthColor;
-            if (slope < 0.5) {
+            var slope = 0.001; 
+        
+            if (effect < 0.5) {
                 healthColor = 'green';
-            } else if (slope < 1.0) {
+            } else if (effect < 1.0) {
                 healthColor = 'yellow';
+                slope += 0.0025
             } else {
                 healthColor = 'red';
+                slope += 0.005
             }
+            // Adjust the rate of decrease based on the slope
+            currentHeight -= slope; // Adjust this factor to control the sensitivity of the slope
+
             healthElement.style.backgroundColor = healthColor;
 
             healthElement.style.height = currentHeight + '%';
 
             // Update the health value display
             var healthValueElement = document.getElementById('currentHealth');
-            healthValueElement.textContent = Math.round(currentHeight+20) + '%';
+            healthValueElement.textContent = Math.round(currentHeight*100/70) + '%';
 
             // Check if health is depleted
             if (currentHeight <= 0) {
                 clearInterval(healthInterval);
                 alert('Too Late! TIM has Died :(.');
             }
-        }
+            }
         
         document.getElementById('startBtn').addEventListener('click', function() {
             if (!isRunning) {

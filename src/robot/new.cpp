@@ -62,10 +62,9 @@ void setup() {
         getIMU(); 
         float posX = imuAngles.roll;
         float posY = imuAngles.pitch;
-        float posZ = imuAngles.yaw;
 
         // Prepare JSON response
-        String json = "{\"x\": " + String(posX, 3) + ", \"y\": " + String(posY, 3) + ", \"z\": " + String(posZ, 3) + "}";
+        String json = "{\"x\": " + String(posX, 3) + ", \"y\": " + String(posY, 3) + "}";
 
         // Send JSON response
         request->send(200, "application/json", json);
