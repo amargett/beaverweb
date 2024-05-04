@@ -57,34 +57,20 @@ void setup() {
     });
 
 // Route to serve acceleration data
-    server.on("/pos", HTTP_GET, [](AsyncWebServerRequest *request) {
+    server.on("/data", HTTP_GET, [](AsyncWebServerRequest *request) {
         // Generate acceleration data (replace these with actual accelerometer readings)
         getIMU(); 
         float posX = imuAngles.roll;
         float posY = imuAngles.pitch;
-
-        // Prepare JSON response
-        String json = "{\"x\": " + String(posX, 3) + ", \"y\": " + String(posY, 3) + "}";
-
-        // Send JSON response
-        request->send(200, "application/json", json);
-    });
-
-    // Route to serve acceleration data
-    server.on("/acc", HTTP_GET, [](AsyncWebServerRequest *request) {
-        // Generate acceleration data (replace these with actual accelerometer readings)
-        getIMU(); 
-        // float acceleration = (imuGyro.roll + imuGyro.pitch + imuGyro.yaw)/3;
         float acceleration = pow((pow(imuGyro.roll, 2) + pow(imuGyro.pitch,2) + pow(imuGyro.yaw,2)), 0.5)/5;
 
 
         // Prepare JSON response
-        String json = "{\"val\": " + String(acceleration, 3) + "}";
+        String json = "{\"x\": " + String(posX, 3) + ", \"y\": " + String(posY, 3) + ", \"acc\": " + String(acceleration, 3) + "}";
 
         // Send JSON response
         request->send(200, "application/json", json);
     });
-
 
     // Start server 
     server.begin();

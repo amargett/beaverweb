@@ -66,104 +66,78 @@
         var canvas1 = document.getElementById('pos-chart');
         var ctx1 = canvas1.getContext('2d');
 
-        var posdata = { 
+        var dataArray = { 
             x: [],
             y: [],
-            z: []
+            acc: []
         };
-
-        var accdata = {
-            val: []
-        }
 
         var colors = {
             x: 'red', 
             y: 'blue', 
-            val: 'green' 
+            acc: 'green' 
         };
 
         var yOffset = canvas.height / 2;
-        var yOffset2 = canvas.height * 3 / 2;
         var xOffset = 0;
         var scale = 40;
 
-        function updateAccPlot() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
+        function updatePlots() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height)
             ctx.beginPath();
             ctx.moveTo(0, yOffset);
             ctx.lineTo(canvas.width, yOffset);
             ctx.strokeStyle = '#000';
             ctx.stroke();
 
-            for (var axis in accdata) {
-                if (accdata[axis].length > 1) {
-                    ctx.beginPath();
-                    ctx.moveTo(xOffset, yOffset - (accdata[axis][0] * scale));
-                    ctx.strokeStyle = colors[axis];
-                    ctx.lineWidth = 2;
-                    for (var i = 1; i < accdata[axis].length; i++) {
-                        ctx.lineTo(xOffset + i / 2, yOffset - (accdata[axis][i] * scale));
-                    }
-                    ctx.stroke();
-                }
-            }
-        }
-
-        function updatePosPlot() {
             ctx1.clearRect(0, 0, canvas.width, canvas.height);
-
             ctx1.beginPath();
             ctx1.moveTo(0, yOffset);
             ctx1.lineTo(canvas.width, yOffset);
             ctx1.strokeStyle = '#000';
             ctx1.stroke();
 
-            for (var axis in posdata) {
-                if (posdata[axis].length > 1) {
-                    ctx1.beginPath();
-                    ctx1.moveTo(xOffset, yOffset - (posdata[axis][0] * scale));
-                    ctx1.strokeStyle = colors[axis];
-                    ctx1.lineWidth = 2;
-                    for (var i = 1; i < posdata[axis].length; i++) {
-                        ctx1.lineTo(xOffset + i / 2, yOffset - (posdata[axis][i] * scale));
+            for (var axis in dataArray) {
+                if (dataArray[axis].length > 1) {
+                    if (axis == "acc"){
+                        ctx.beginPath();
+                        ctx.moveTo(xOffset, yOffset - (dataArray[axis][0] * scale));
+                        ctx.strokeStyle = colors[axis];
+                        ctx.lineWidth = 2;
+                        for (var i = 1; i < dataArray[axis].length; i++) {
+                            ctx.lineTo(xOffset + i / 2, yOffset - (dataArray[axis][i] * scale));
+                        }
+                        ctx.stroke();
                     }
-                    ctx1.stroke();
+                    else{
+                        ctx1.beginPath();
+                        ctx1.moveTo(xOffset, yOffset - (dataArray[axis][0] * scale));
+                        ctx1.strokeStyle = colors[axis];
+                        ctx1.lineWidth = 2;
+                        for (var i = 1; i < dataArray[axis].length; i++) {
+                            ctx1.lineTo(xOffset + i / 2, yOffset - (dataArray[axis][i] * scale));
+                        }
+                        ctx1.stroke();
+                    }
+
                 }
             }
         }
 
-        function fetchPosData() {
-            fetch('/pos')
+        function fetchData() {
+            fetch('/data')
                 .then(response => response.json())
-                .then(pos => {
-                    for (var axis in pos) {
-                        posdata[axis].push(pos[axis]);
-                        if (posdata[axis].length > canvas.width) {
-                            posdata[axis].shift();
+                .then(data => {
+                    for (var axis in data) {
+                        dataArray[axis].push(data[axis]);
+                        if (dataArray[axis].length > canvas.width) {
+                            dataArray[axis].shift();
                         }
                     }
-                    updatePosPlot();
+                    updatePlots();
                 })
                 .catch(error => {
-                    console.error('Error fetching position', error);
-                });
-        }
-
-        function fetchAccData() {
-            fetch('/acc')
-                .then(response => response.json())
-                .then(acc => {
-                    for (var axis in acc) {
-                        accdata[axis].push(acc[axis]);
-                        if (accdata[axis].length > canvas.width) {
-                            accdata[axis].shift();
-                        }
-                    }
-                    updateAccPlot();
-                })
-                .catch(error => {
-                    console.error('Error fetching acceleration:', error);
+                    console.error('Error fetching data', error);
                 });
         }
 
@@ -172,9 +146,9 @@
             var currentHeight = parseFloat(healthElement.style.height) || 70;
 
             // Calculate the slope based on the most recent acceleration and position values
-            var latestAcc = accdata.val[accdata.val.length - 1];
-            var latestPosx = posdata.x[posdata.x.length - 1];
-            var latestPosy = posdata.y[posdata.y.length - 1];
+            var latestAcc = dataArray.acc[dataArray.acc.length - 1];
+            var latestPosx = dataArray.x[dataArray.x.length - 1];
+            var latestPosy = dataArray.y[dataArray.y.length - 1];
 
             var statusElement = document.getElementById("currentStatus"); 
             var statusText = "Tim Needs Your Help!"; 
@@ -230,9 +204,9 @@
             var currentHeight = parseFloat(healthElement.style.height) || 70;
 
             // Calculate the slope based on the most recent acceleration and position values
-            var latestAcc = accdata.val[accdata.val.length - 1];
-            var latestPosx = posdata.x[posdata.x.length - 1];
-            var latestPosy = posdata.y[posdata.y.length - 1];
+            var latestAcc = dataArray.acc[dataArray.acc.length - 1];
+            var latestPosx = dataArray.x[dataArray.x.length - 1];
+            var latestPosy = dataArray.y[dataArray.y.length - 1];
 
             var statusElement = document.getElementById("currentStatus"); 
             var statusText = "Tim Is Stabilizing"; 
@@ -294,8 +268,7 @@
             setInterval(stableHealth, 25); 
         });
 
-        setInterval(fetchAccData, 25); // Fetch data for acceleration every 25 milliseconds
-        setInterval(fetchPosData, 25); // Fetch data for position every 25 milliseconds
+        setInterval(fetchData, 25); // Fetch data every 25 milliseconds
 
     </script>
 </body>
