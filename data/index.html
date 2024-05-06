@@ -34,11 +34,35 @@
             position: absolute;
             border: 3px solid black;
         }
+        #fsr {
+            width: 33%;
+            height: 71%;
+            bottom: 0;
+            position: absolute;
+            right: 0; /* Position it next to the health bar */
+        }
+
+        #fsr-bar {
+            width: 33%;
+            background-color: blue;
+            height: 60%;
+            bottom: 0;
+            position: absolute;
+            right: 0; /* Position it next to the health bar */
+        }
+        #fsr h1 {
+        text-align: center;
+        margin-bottom: 5px;
+        font-size: 20px;
+        }
+
     </style>
 </head>
 <body>
     <p><button id="startBtn">START</button></p>
     <p><button id="stable">AMBULANCE REACHED</button></p>
+    <p><button id="stopBtn">PAUSE</button></p>
+    <p><button id="human">HUMAN INTERVENTION</button></p>
     <div style="width: 80%; margin: 5px auto;">
         <h1>Real-time <span class="roll">Roll</span> & <span class="pitch">Pitch</span></h1>
         <canvas id="pos-chart" width="800" height="300"></canvas>
@@ -53,6 +77,10 @@
         <h2 id="health-value">Health: <span id="currentHealth">100%</span></h2>
         <h3 id="status">Status: <span id="currentStatus">Ready</span></h3>
         <div id="health"></div>
+        <div id="fsr">
+            <h1>TIM Compression Level</h1> <!-- FSR bar title -->
+            <div id="fsr-bar"></div> <!-- FSR bar -->
+        </div>
         <div id="full-health"></div> 
     </div>
 
@@ -69,7 +97,8 @@
         var dataArray = { 
             x: [],
             y: [],
-            acc: []
+            acc: [], 
+            fsr: []
         };
 
         var colors = {
@@ -99,6 +128,7 @@
 
             for (var axis in dataArray) {
                 if (dataArray[axis].length > 1) {
+                    if (axis != "fsr"){
                     if (axis == "acc"){
                         ctx.beginPath();
                         ctx.moveTo(xOffset, yOffset - (dataArray[axis][0] * scale));
@@ -121,6 +151,10 @@
                     }
 
                 }
+                else{
+                    
+                }
+            }
             }
         }
 
@@ -149,31 +183,35 @@
             var latestAcc = dataArray.acc[dataArray.acc.length - 1];
             var latestPosx = dataArray.x[dataArray.x.length - 1];
             var latestPosy = dataArray.y[dataArray.y.length - 1];
+            var latestfsr = dataArray.fsr[dataArray.fsr.length -1]; 
 
             var statusElement = document.getElementById("currentStatus"); 
             var statusText = "Tim Needs Your Help!"; 
 
-            if (Math.abs(latestPosx) > 0.5){
+            if (Math.abs(latestPosx) > 1.0){
                 statusText = "Too much roll!"; 
             }
-            if (Math.abs(latestPosy) > 0.5){
+            if (Math.abs(latestPosy) > 1.0){
                 statusText = "Too much pitch!"; 
             } 
-            if (Math.abs(latestAcc) > 0.5){
+            if (Math.abs(latestAcc) > 1.0){
                 statusText = "Too much Acceleration!"; 
             } 
+            if (Math.abs(latestfsr) > 0.5){
+                statusText = "TIM's getting crushed!"
+            }
             
             statusElement.textContent = statusText; 
 
-            var effect = Math.abs(latestAcc) + Math.abs(latestPosx) + Math.abs(latestPosy);
+            var effect = Math.abs(latestAcc) + Math.abs(latestPosx) + Math.abs(latestPosy) + latestfsr;
             
             // Update the health bar color based on the slope
             var healthColor;
-            var slope = 0.005; 
+            var slope = 0.001; 
         
-            if (effect < 0.5) {
+            if (effect < 0.7) {
                 healthColor = 'green';
-            } else if (effect < 1.0) {
+            } else if (effect < 1.5) {
                 healthColor = 'yellow';
                 slope += 0.0025
             } else {
@@ -211,13 +249,13 @@
             var statusElement = document.getElementById("currentStatus"); 
             var statusText = "Tim Is Stabilizing"; 
 
-            if (Math.abs(latestPosx) > 0.5){
+            if (Math.abs(latestPosx) > 1.0){
                 statusText = "Too much roll!"; 
             }
-            if (Math.abs(latestPosy) > 0.5){
+            if (Math.abs(latestPosy) > 1.0){
                 statusText = "Too much pitch!"; 
             } 
-            if (Math.abs(latestAcc) > 0.5){
+            if (Math.abs(latestAcc) > 1.0){
                 statusText = "Too much Acceleration!"; 
             } 
             
@@ -227,16 +265,16 @@
             
             // Update the health bar color based on the slope
             var healthColor;
-            var slope = 0.001; 
+            var slope = 0.004; 
         
             if (effect < 0.5) {
                 healthColor = 'green';
             } else if (effect < 1.0) {
                 healthColor = 'yellow';
-                slope += 0.0025
+                slope += 0.001
             } else {
                 healthColor = 'red';
-                slope += 0.005
+                slope += 0.002
             }
             // Adjust the rate of decrease based on the slope
             currentHeight -= slope; // Adjust this factor to control the sensitivity of the slope
@@ -255,20 +293,47 @@
                 alert('Too Late! TIM has Died :(.');
             }
             }
+
+        function updateFSRBar() {
+            var fsrElement = document.getElementById('fsr-bar');
+            percentage = dataArray.fsr[dataArray.fsr.length - 1]*100;
+            fsrElement.style.height = percentage + '%';
+        }
+
         
         document.getElementById('startBtn').addEventListener('click', function() {
             if (!isRunning) {
                 isRunning = true;
-                healthInterval = setInterval(decreaseHealth, 25); // Call the decreaseHealth function every 25 milliseconds
+                healthInterval = setInterval(decreaseHealth, 50); // Call the decreaseHealth function every 25 milliseconds
             }
         });
 
         document.getElementById('stable').addEventListener('click', function() {
             clearInterval(healthInterval); // Stop the health bar update
-            setInterval(stableHealth, 25); 
+            stableInterval = setInterval(stableHealth, 50); 
+        });
+
+        document.getElementById('stopBtn').addEventListener('click', function() {
+            isRunning = false; 
+            clearInterval(healthInterval); // Stop the health bar update
+            clearInterval(stableInterval); 
+        });
+
+        document.getElementById('human').addEventListener('click', function() {
+            var healthElement = document.getElementById('health');
+            var currentHeight = parseFloat(healthElement.style.height) || 70;
+            currentHeight -= 0.2*70; // Adjust this factor to control the sensitivity of the slope
+            healthElement.style.backgroundColor = 'red';
+            var healthValueElement = document.getElementById('currentHealth');
+            healthValueElement.textContent = Math.round(currentHeight*100/70) + '%';
+            healthElement.style.height = currentHeight + '%';
+            var statusElement = document.getElementById("currentStatus"); 
+            var statusText = "Human Intervention, -20%"; 
+            statusElement.textContent = statusText; 
         });
 
         setInterval(fetchData, 25); // Fetch data every 25 milliseconds
+        setInterval(updateFSRBar, 100); 
 
     </script>
 </body>

@@ -9,6 +9,10 @@ AsyncWebServer server(80);
 EulerAngles imuAngles; // IMU angles
 EulerAngles imuGyro; // IMU angles from gyro
 
+int fsrReading; 
+int fsrPin = 1; 
+float toSend; 
+
 const char* ssid = "212IntroRobotics";
 const char* password = "robot2016";
 
@@ -60,13 +64,19 @@ void setup() {
     server.on("/data", HTTP_GET, [](AsyncWebServerRequest *request) {
         // Generate acceleration data (replace these with actual accelerometer readings)
         getIMU(); 
+        fsrReading = 1000 -analogRead(fsrPin); 
+        toSend = map(fsrReading, 0, 450, 0, 100)/100.0; 
+        if(toSend < 0){
+            toSend =0; 
+        }
+        Serial.println(fsrReading); 
         float posX = imuAngles.roll;
         float posY = imuAngles.pitch;
         float acceleration = pow((pow(imuGyro.roll, 2) + pow(imuGyro.pitch,2) + pow(imuGyro.yaw,2)), 0.5)/5;
 
 
         // Prepare JSON response
-        String json = "{\"x\": " + String(posX, 3) + ", \"y\": " + String(posY, 3) + ", \"acc\": " + String(acceleration, 3) + "}";
+        String json = "{\"x\": " + String(posX, 3) + ", \"y\": " + String(posY, 3) + ", \"acc\": " + String(acceleration, 3) + ", \"fsr\": " + String(toSend)+ "}";
 
         // Send JSON response
         request->send(200, "application/json", json);
